@@ -2,11 +2,11 @@
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision$
-# @(#) $Id$
-# @(#) $Source$
+# @(#) $Revision: 1.1 $
+# @(#) $Id: pmver,v 1.1 2000/06/16 00:13:21 chongo Exp chongo $
+# @(#) $Source: /usr/local/src/cmd/pmver/RCS/pmver,v $
 #
-# Copyright (c) 2000 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2000-2006 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -30,30 +30,39 @@
 #
 # Share and enjoy!
 
-# setup
-#
-PERL_ROOT="/usr/lib/perl5"
-
 # parse args
 #
 if [ $# -lt 1 ]; then
-    echo "usage: $0 MODULE::NAME" 1>&2
+    echo "usage: $0 MODULE::NAME ..." 1>&2
     exit 1
 fi
-file=`echo "$1" | sed -e 's#::#/#g'`
 
-# firewall
+# parse args
 #
-if [ ! -d "$PERL_ROOT" ]; then
-    echo "$0: cannot find $PERL_ROOT tree" 1>&2
-    exit 2
-fi
+while [[ $# -gt 0 ]]; do
+    file=`echo "$1" | sed -e 's#::#/#g'`
 
-# look at the files
+    # look at the files
+    #
+    find {/usr,/sw}/lib/perl{5,6} \
+        -ipath '*'"$file"'*.pm' -type f -print 2>/dev/null |
+	sed -e 's/[	 ][	 ]*/\\ /g' |
+	while read file; do
+	    if [[ ! -r "$file" ]]; then
+		echo "$0: cannot read $file" 1>&2
+	    else
+		echo -n "$file : "
+		perl -MExtUtils::MakeMaker \
+		  -le 'print MM->parse_version(shift);' "$file"
+		status="$?"
+		if [[ "$status" -ne 0 ]]; then
+		    echo "$0: ExtUtils::MakeMaker exit $status on $file" 1>&2
+		fi
+	    fi
+	done
+    shift
+done
+
+# All done!!! -- Jessica Noll, Age 2
 #
-cd "$PERL_ROOT"
-find . -path '*'"$file"'.pm' -print |
-    while read file; do
-	echo -n "$file: "
-	perl -MExtUtils::MakeMaker -le 'print MM->parse_version(shift);' "$file"
-    done
+exit 0
