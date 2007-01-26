@@ -1,12 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision: 1.1 $
-# @(#) $Id: pmver,v 1.1 2000/06/16 00:13:21 chongo Exp chongo $
+# @(#) $Revision: 1.2 $
+# @(#) $Id: pmver,v 1.2 2006/09/10 00:11:45 chongo Exp chongo $
 # @(#) $Source: /usr/local/src/cmd/pmver/RCS/pmver,v $
 #
-# Copyright (c) 2000-2006 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2000-2007 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
