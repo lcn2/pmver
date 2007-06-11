@@ -2,8 +2,8 @@
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision: 1.4 $
-# @(#) $Id: pmver,v 1.4 2007/05/19 09:09:35 chongo Exp chongo $
+# @(#) $Revision: 1.5 $
+# @(#) $Id: pmver,v 1.5 2007/05/19 09:11:43 chongo Exp chongo $
 # @(#) $Source: /usr/local/src/cmd/pmver/RCS/pmver,v $
 #
 # Copyright (c) 2000-2007 by Landon Curt Noll.  All Rights Reserved.
@@ -38,6 +38,19 @@ if [ $# -lt 1 ]; then
 fi
 LANG=C
 
+# determine perl locations
+#
+DIRSET=
+for i in {/usr,/usr/local,/sw}/lib/perl{5,6} /Library/Perl; do
+    if [ -d "$i" ]; then
+	DIRSET="$DIRSET $i"
+    fi
+done
+if [ -z "$DIRSET" ]; then
+    echo "cannot find any perl library directories" 1>&2
+    exit 2
+fi
+
 # parse args
 #
 while [[ $# -gt 0 ]]; do
@@ -45,8 +58,7 @@ while [[ $# -gt 0 ]]; do
 
     # look at the files
     #
-    find {/usr,/usr/local,/sw}/lib/perl{5,6} \
-        -ipath '*'"$file"'*.pm' -type f -print 2>/dev/null |
+    find $DIRSET -ipath '*'"$file"'*.pm' -type f -print 2>/dev/null |
 	sed -e 's/[	 ][	 ]*/\\ /g' |
 	while read file; do
 	    if [[ ! -r "$file" ]]; then
