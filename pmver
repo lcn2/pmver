@@ -2,8 +2,8 @@
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision: 1.5 $
-# @(#) $Id: pmver,v 1.5 2007/05/19 09:11:43 chongo Exp chongo $
+# @(#) $Revision: 1.6 $
+# @(#) $Id: pmver,v 1.6 2007/06/11 22:13:51 chongo Exp chongo $
 # @(#) $Source: /usr/local/src/cmd/pmver/RCS/pmver,v $
 #
 # Copyright (c) 2000-2007 by Landon Curt Noll.  All Rights Reserved.
@@ -41,7 +41,7 @@ LANG=C
 # determine perl locations
 #
 DIRSET=
-for i in {/usr,/usr/local,/sw}/lib/perl{5,6} /Library/Perl; do
+for i in {/usr,/usr/local,/sw}/lib/perl{5,6} {/System,}/Library/Perl; do
     if [ -d "$i" ]; then
 	DIRSET="$DIRSET $i"
     fi
