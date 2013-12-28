@@ -2,11 +2,11 @@
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision: 1.2 $
-# @(#) $Id: Makefile,v 1.2 2002/01/21 05:49:16 chongo Exp chongo $
+# @(#) $Revision: 1.3 $
+# @(#) $Id: Makefile,v 1.3 2013/12/28 15:45:44 chongo Exp chongo $
 # @(#) $Source: /usr/local/src/bin/pmver/RCS/Makefile,v $
 #
-# Copyright (c) 1999 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 1999-2013 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
