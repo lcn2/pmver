@@ -2,8 +2,8 @@
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision: 1.4 $
-# @(#) $Id: Makefile,v 1.4 2013/12/28 15:46:27 chongo Exp chongo $
+# @(#) $Revision: 1.5 $
+# @(#) $Id: Makefile,v 1.5 2013/12/28 15:48:37 chongo Exp chongo $
 # @(#) $Source: /usr/local/src/bin/pmver/RCS/Makefile,v $
 #
 # Copyright (c) 1999-2013 by Landon Curt Noll.  All Rights Reserved.
@@ -49,13 +49,13 @@ clobber: clean
 
 # push source to remote sites
 #
-pushsrc: all
+pushsrc:
 	${RSRCPSH} -v -x . ${THISDIR}
 
-pushsrcq: all
+pushsrcq:
 	@${RSRCPSH} -q . ${THISDIR}
 
-pushsrcn: all
+pushsrcn:
 	${RSRCPSH} -v -x -n . ${THISDIR}
 
 # run make on remote hosts
