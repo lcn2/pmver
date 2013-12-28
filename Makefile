@@ -2,9 +2,9 @@
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision: 1.1 $
-# @(#) $Id: Makefile,v 1.1 2000/06/16 00:13:21 chongo Exp chongo $
-# @(#) $Source: /usr/local/src/cmd/pmver/RCS/Makefile,v $
+# @(#) $Revision: 1.2 $
+# @(#) $Id: Makefile,v 1.2 2002/01/21 05:49:16 chongo Exp chongo $
+# @(#) $Source: /usr/local/src/bin/pmver/RCS/Makefile,v $
 #
 # Copyright (c) 1999 by Landon Curt Noll.  All Rights Reserved.
 #
@@ -28,15 +28,46 @@
 
 SHELL=/bin/sh
 BINMODE=0555
-DESTBIN=/usr/local/bin
+DESTDIR=/usr/local/bin
 INSTALL=install
 TARGETS= pmver
+
+# remote operations
+#
+THISDIR= pmver
+RSRCPSH= rsrcpush
+RMAKE= rmake
 
 all: ${TARGETS}
 
 install: all
-	${INSTALL} -c -m ${BINMODE} ${TARGETS} ${DESTBIN}
+	${INSTALL} -c -m ${BINMODE} ${TARGETS} ${DESTDIR}
 
 clean:
 
 clobber: clean
+
+# push source to remote sites
+#
+pushsrc: all
+	${RSRCPSH} -v -x . ${THISDIR}
+
+pushsrcq: all
+	@${RSRCPSH} -q . ${THISDIR}
+
+pushsrcn: all
+	${RSRCPSH} -v -x -n . ${THISDIR}
+
+# run make on remote hosts
+#
+rmtall:
+	${RMAKE} ${THISDIR} all
+
+rmtinstall:
+	${RMAKE} ${THISDIR} install
+
+rmtclean:
+	${RMAKE} ${THISDIR} clean
+
+rmtclobber:
+	${RMAKE} ${THISDIR} clobber
