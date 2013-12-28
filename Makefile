@@ -2,8 +2,8 @@
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision: 1.3 $
-# @(#) $Id: Makefile,v 1.3 2013/12/28 15:45:44 chongo Exp chongo $
+# @(#) $Revision: 1.4 $
+# @(#) $Id: Makefile,v 1.4 2013/12/28 15:46:27 chongo Exp chongo $
 # @(#) $Source: /usr/local/src/bin/pmver/RCS/Makefile,v $
 #
 # Copyright (c) 1999-2013 by Landon Curt Noll.  All Rights Reserved.
@@ -28,7 +28,7 @@
 
 SHELL=/bin/sh
 BINMODE=0555
-DESTDIR=/usr/local/bin
+DESTBIN=/usr/local/bin
 INSTALL=install
 TARGETS= pmver
 
@@ -41,7 +41,7 @@ RMAKE= rmake
 all: ${TARGETS}
 
 install: all
-	${INSTALL} -c -m ${BINMODE} ${TARGETS} ${DESTDIR}
+	${INSTALL} -c -m ${BINMODE} ${TARGETS} ${DESTBIN}
 
 clean:
 
