@@ -2,8 +2,8 @@
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision: 1.9 $
-# @(#) $Id: pmver,v 1.9 2014/11/05 23:12:43 chongo Exp $
+# @(#) $Revision: 1.8 $
+# @(#) $Id: pmver,v 1.8 2015/09/06 05:56:53 root Exp $
 # @(#) $Source: /usr/local/src/bin/pmver/RCS/pmver,v $
 #
 # Copyright (c) 2000-2007 by Landon Curt Noll.  All Rights Reserved.

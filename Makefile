@@ -2,8 +2,8 @@
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision: 1.8 $
-# @(#) $Id: Makefile,v 1.8 2014/03/15 23:45:49 root Exp root $
+# @(#) $Revision: 1.9 $
+# @(#) $Id: Makefile,v 1.9 2014/03/15 23:59:57 root Exp $
 # @(#) $Source: /usr/local/src/bin/pmver/RCS/Makefile,v $
 #
 # Copyright (c) 1999-2013 by Landon Curt Noll.  All Rights Reserved.
