@@ -1,12 +1,8 @@
-#!/usr/bin/make
+#!/usr/bin/env make
 #
 # pmver - determine the version of a perl module
 #
-# @(#) $Revision: 1.9 $
-# @(#) $Id: Makefile,v 1.9 2014/03/15 23:59:57 root Exp $
-# @(#) $Source: /usr/local/src/bin/pmver/RCS/Makefile,v $
-#
-# Copyright (c) 1999-2013 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 1999-2013,2023 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -26,17 +22,14 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-SHELL=/bin/sh
-BINMODE=0555
-DESTBIN=/usr/local/bin
-INSTALL=install
+SHELL= bash
+BINMODE= 0555
+DESTBIN= /usr/local/bin
+INSTALL= install
 TARGETS= pmver
-
-# remote operations
-#
-THISDIR= pmver
-RSRCPSH= rsrcpush
-RMAKE= rmake
+RM= rm
+CP= cp
+CHMOD= chmod
 
 all: ${TARGETS}
 
@@ -46,44 +39,3 @@ install: all
 clean:
 
 clobber: clean
-
-# help
-#
-help:
-	@echo make install
-	@echo
-	@echo make pushsrc
-	@echo make pushsrcn
-	@echo
-	@echo make rmtinstall
-	@echo
-	@echo make univ
-
-# push source to remote sites
-#
-pushsrc:
-	${RSRCPSH} -v -x . ${THISDIR}
-
-pushsrcq:
-	@${RSRCPSH} -q . ${THISDIR}
-
-pushsrcn:
-	${RSRCPSH} -v -x -n . ${THISDIR}
-
-# run make on remote hosts
-#
-rmtall:
-	${RMAKE} -v ${THISDIR} all
-
-rmtinstall:
-	${RMAKE} -v ${THISDIR} install
-
-rmtclean:
-	${RMAKE} -v ${THISDIR} clean
-
-rmtclobber:
-	${RMAKE} -v ${THISDIR} clobber
-
-# build, install, and cleanup everywhere
-#
-univ: install pushsrc rmtinstall
