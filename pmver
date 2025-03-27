@@ -1,12 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
-# pmver - determine the version of a perl module
+# pmver - determine paths and the versions of perl modules
 #
-# @(#) $Revision: 1.8 $
-# @(#) $Id: pmver,v 1.8 2015/09/06 05:56:53 root Exp $
-# @(#) $Source: /usr/local/src/bin/pmver/RCS/pmver,v $
-#
-# Copyright (c) 2000-2007 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 1999-2000,2002,2006-2007,2013-2015,2023,2025 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -26,47 +22,189 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 #
-# chongo <was here> /\oo/\
+# chongo (Landon Curt Noll) /\oo/\
 #
-# Share and enjoy!
+# http://www.isthe.com/chongo/index.html
+# https://github.com/lcn2
+#
+# Share and enjoy!  :-)
 
-# parse args
+
+# setup
 #
-if [ $# -lt 1 ]; then
-    echo "usage: $0 MODULE::NAME ..." 1>&2
-    exit 1
+export VERSION="1.8.1 2025-03-26"
+NAME=$(basename "$0")
+export NAME
+#
+export V_FLAG=0
+#
+export DO_NOT_PROCESS=
+export LANG=C
+
+
+# usage
+#
+export USAGE="usage: $0 [-h] [-v level] [-V] [-N] module ...
+
+    -h          print help message and exit
+    -v level    set verbosity level (def level: $V_FLAG)
+    -V          print version string and exit
+
+    -N          do not process anything, just parse arguments (def: process something)
+
+    module	perl module name with ::'s between components
+
+Exit codes:
+     0         all OK
+     1         some internal tool exited non-zero
+     2         -h and help string printed or -V and version string printed
+     3         command line error
+     4	       cannot find directories with perl modules
+ >= 10         internal error
+
+$NAME version: $VERSION"
+
+
+# parse command line
+#
+while getopts :hv:VN flag; do
+  case "$flag" in
+    h) echo "$USAGE"
+        exit 2
+        ;;
+    v) V_FLAG="$OPTARG"
+        ;;
+    V) echo "$VERSION"
+        exit 2
+        ;;
+    N) DO_NOT_PROCESS="-N"
+        ;;
+    \?) echo "$0: ERROR: invalid option: -$OPTARG" 1>&2
+        echo 1>&2
+        echo "$USAGE" 1>&2
+        exit 3
+        ;;
+    :) echo "$0: ERROR: option -$OPTARG requires an argument" 1>&2
+        echo 1>&2
+        echo "$USAGE" 1>&2
+        exit 3
+        ;;
+    *) echo "$0: ERROR: unexpected value from getopts: $flag" 1>&2
+        echo 1>&2
+        echo "$USAGE" 1>&2
+        exit 3
+        ;;
+  esac
+done
+if [[ $V_FLAG -ge 1 ]]; then
+    echo "$0: debug[1]: debug level: $V_FLAG" 1>&2
 fi
-LANG=C
+#
+# remove the options
+#
+shift $(( OPTIND - 1 ));
+#
+# verify arg count
+#
+if [[ $# -lt 1 ]]; then
+    echo "$0: ERROR: expected at least 1 arg, found: $#" 1>&2
+    echo "$USAGE" 1>&2
+    exit 3
+fi
+
 
 # determine perl locations
 #
-DIRSET=$(for i in {/usr,/usr/local,/sw}/lib/perl{,5,6} {/System,}/Library/Perl \
-	 {/usr/share,/usr/local/share}/perl{,5,6} /usr/lib{,64}/perl{,5,6}; do
-    if [ -d "$i" ]; then
-	echo "$i"
+unset ORIG_DIRSET
+declare -ag ORIG_DIRSET
+ORIG_DIRSET=(
+    /Library/Perl
+    /Library/Perl5
+    /Library/Perl6
+    /System/Library/Perl
+    /System/Library/Perl5
+    /System/Library/Perl6
+    /opt/homebrew/Cellar/perl
+    /opt/homebrew/Cellar/perl5
+    /opt/homebrew/Cellar/perl6
+    /opt/homebrew/lib/perl
+    /opt/homebrew/lib/perl5
+    /opt/homebrew/lib/perl6
+    /sw/lib/perl
+    /sw/lib/perl5
+    /sw/lib/perl6
+    /usr/lib64/perl
+    /usr/lib64/perl5
+    /usr/lib64/perl6
+    /usr/lib/perl
+    /usr/lib/perl5
+    /usr/lib/perl6
+    /usr/local/bin/lib/Image
+    /usr/local/lib/perl
+    /usr/local/lib/perl5
+    /usr/local/lib/perl6
+    /usr/local/perl/perl/lib/perl
+    /usr/local/perl/perl5/lib/perl5
+    /usr/local/perl/perl6/lib/perl6
+    /usr/local/share/perl
+    /usr/local/share/perl5
+    /usr/local/share/perl6
+    /usr/share/perl
+    /usr/share/perl5
+    /usr/share/perl6
+    )
+unset DIRSET
+declare -ag DIRSET
+for i in "${ORIG_DIRSET[@]}"; do
+    if [[ -d $i ]]; then
+	DIRSET+=("$i")
     fi
-done | sort -u)
-if [ -z "$DIRSET" ]; then
-    echo "cannot find any perl library directories" 1>&2
-    exit 2
+done
+if [[ ${#DIRSET} -le 0 ]]; then
+    echo "$0: ERROR: cannot find any directories with perl module files" 1>&2
+    exit 4
 fi
+
+
+# print running info if verbose
+#
+# If -v 3 or higher, print exported variables in order that they were exported.
+#
+if [[ $V_FLAG -ge 3 ]]; then
+    echo "$0: debug[3]: VERSION=$VERSION" 1>&2
+    echo "$0: debug[3]: NAME=$NAME" 1>&2
+    echo "$0: debug[3]: V_FLAG=$V_FLAG" 1>&2
+    echo "$0: debug[3]: DO_NOT_PROCESS=$DO_NOT_PROCESS" 1>&2
+    for index in "${!DIRSET[@]}"; do
+        echo "$0: debug[3]: DIRSET[$index]=${DIRSET[$index]}" 1>&2
+    done
+fi
+
+
+# -N stops early before any processing is performed
+#
+if [[ -n $DO_NOT_PROCESS ]]; then
+    if [[ $V_FLAG -ge 3 ]]; then
+        echo "$0: debug[3]: arguments parsed, -N given, exiting 0" 1>&2
+    fi
+    exit 0
+fi
+
 
 # parse args
 #
 while [[ $# -gt 0 ]]; do
-    file=`echo "$1" | sed -e 's#::#/#g'`
 
     # look at the files
     #
-    find $DIRSET -ipath '*'"$file"'*.pm' -type f -print 2>/dev/null |
+    find "${DIRSET[@]}" -ipath '*/'"${1//\:\:/\/}"'*.pm' -type f -print 2>/dev/null |
 	sed -e 's/[	 ][	 ]*/\\ /g' |
-	while read file; do
+	while read -r file; do
 	    if [[ ! -r "$file" ]]; then
 		echo "$0: cannot read $file" 1>&2
 	    else
 		echo -n "$file : "
-		perl -MExtUtils::MakeMaker \
-		  -le 'print MM->parse_version(shift);' "$file"
+		perl -MExtUtils::MakeMaker -le 'print MM->parse_version(shift);' "$file"
 		status="$?"
 		if [[ "$status" -ne 0 ]]; then
 		    echo "$0: ExtUtils::MakeMaker exit $status on $file" 1>&2
@@ -76,6 +214,7 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-# All done!!! -- Jessica Noll, Age 2
+
+# All Done!!! -- Jessica Noll, Age 2
 #
 exit 0

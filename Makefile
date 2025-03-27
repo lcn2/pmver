@@ -1,8 +1,8 @@
 #!/usr/bin/env make
 #
-# pmver - determine the version of a perl module
+# pmver - determine paths and the versions of perl modules
 #
-# Copyright (c) 1999-2013,2023 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 1999-2000,2002,2006-2007,2013-2015,2023,2025 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -21,21 +21,78 @@
 # USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
+#
+# chongo (Landon Curt Noll) /\oo/\
+#
+# http://www.isthe.com/chongo/index.html
+# https://github.com/lcn2
+#
+# Share and enjoy!  :-)
 
-SHELL= bash
-BINMODE= 0555
-DESTBIN= /usr/local/bin
-INSTALL= install
-TARGETS= pmver
-RM= rm
-CP= cp
+
+#############
+# utilities #
+#############
+
+CC= cc
 CHMOD= chmod
+CP= cp
+ID= id
+INSTALL= install
+RM= rm
+SHELL= bash
+
+
+######################
+# target information #
+######################
+
+# V=@:  do not echo debug statements (quiet mode)
+# V=@   echo debug statements (debug / verbose mode)
+#
+V=@:
+#V=@
+
+DESTDIR= /usr/local/bin
+
+TARGETS= pmver
+
+
+######################################
+# all - default rule - must be first #
+######################################
 
 all: ${TARGETS}
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
 
-install: all
-	${INSTALL} -c -m ${BINMODE} ${TARGETS} ${DESTBIN}
+
+#################################################
+# .PHONY list of rules that do not create files #
+#################################################
+
+.PHONY: all configure clean clobber install
+
+
+###################################
+# standard Makefile utility rules #
+###################################
+
+configure:
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
 
 clean:
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
 
 clobber: clean
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
+
+install: all
+	${V} echo DEBUG =-= $@ start =-=
+	@if [[ $$(${ID} -u) != 0 ]]; then echo "ERROR: must be root to make $@" 1>&2; exit 2; fi
+	${INSTALL} -d -m 0755 ${DESTDIR}
+	${INSTALL} -m 0555 ${TARGETS} ${DESTDIR}
+	${V} echo DEBUG =-= $@ end =-=
