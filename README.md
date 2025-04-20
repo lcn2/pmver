@@ -18,9 +18,24 @@ sudo make install
 ```
 
 
-# To use
+# Examples
+
+Search for `IO::Compress::Base` perl modules, and sub-modules:
 
 ```sh
+$ /usr/local/bin/pmver IO::Compress::Base
+```
+
+Search for  `IO::Compress::Base` perl modules, and display the paths being searched:
+
+```sh
+$ /usr/local/bin/pmver -v 3 Compress::Gzip
+```
+
+
+# To use
+
+```
 /usr/local/bin/pmver [-h] [-v level] [-V] [-N] module ...
 
     -h          print help message and exit
@@ -40,20 +55,6 @@ Exit codes:
  >= 10         internal error
 
 pmver version: 1.8.1 2025-03-26
-```
-
-# Examples
-
-Search for `IO::Compress::Base` perl modules, and sub-modules:
-
-```sh
-/usr/local/bin/pmver IO::Compress::Base
-```
-
-Search for  `IO::Compress::Base` perl modules, and display the paths being searched:
-
-```sh
-/usr/local/bin/pmver -v 3 Compress::Gzip
 ```
 
 
